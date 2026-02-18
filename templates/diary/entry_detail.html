@@ -1,0 +1,151 @@
+{% extends 'diary/base.html' %}
+
+{% block title %}{{ entry.title }} - My Diary{% endblock %}
+
+{% block extra_css %}
+<style>
+    .detail-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .detail-card {
+        background: var(--surface);
+        border-radius: 1rem;
+        box-shadow: var(--shadow-lg);
+        padding: 3rem;
+    }
+
+    .detail-header {
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .detail-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .detail-mood {
+        font-size: 2rem;
+    }
+
+    .detail-meta {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .detail-content {
+        font-size: 1.125rem;
+        line-height: 1.8;
+        color: var(--text-primary);
+        margin-bottom: 2rem;
+        white-space: pre-wrap;
+    }
+
+    .detail-actions {
+        display: flex;
+        gap: 1rem;
+        padding-top: 2rem;
+        border-top: 2px solid var(--border-color);
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+        .detail-card {
+            padding: 2rem;
+        }
+
+        .detail-title {
+            font-size: 2rem;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .detail-meta {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .detail-actions {
+            flex-direction: column;
+        }
+
+        .detail-actions .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="detail-container">
+    <div class="detail-card">
+        <div class="detail-header">
+            <h1 class="detail-title">
+                {{ entry.title }}
+                {% if entry.mood %}
+                <span class="detail-mood">
+                    {% if entry.mood == 'happy' %}😊
+                    {% elif entry.mood == 'excited' %}🎉
+                    {% elif entry.mood == 'calm' %}😌
+                    {% elif entry.mood == 'sad' %}😢
+                    {% elif entry.mood == 'angry' %}😠
+                    {% elif entry.mood == 'anxious' %}😰
+                    {% elif entry.mood == 'grateful' %}🙏
+                    {% elif entry.mood == 'tired' %}😴
+                    {% endif %}
+                </span>
+                {% endif %}
+            </h1>
+            <div class="detail-meta">
+                <div class="meta-item">
+                    <i class="fas fa-calendar"></i>
+                    <strong>Date:</strong> {{ entry.date|date:"F d, Y" }}
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <strong>Created:</strong> {{ entry.created_at|date:"M d, Y - g:i A" }}
+                </div>
+                {% if entry.updated_at != entry.created_at %}
+                <div class="meta-item">
+                    <i class="fas fa-edit"></i>
+                    <strong>Updated:</strong> {{ entry.updated_at|date:"M d, Y - g:i A" }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="detail-content">
+            {{ entry.content }}
+        </div>
+
+        <div class="detail-actions">
+            <a href="{% url 'diary_home' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+            <a href="{% url 'edit_entry' entry.pk %}" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Edit Entry
+            </a>
+            <a href="{% url 'delete_entry' entry.pk %}" class="btn btn-danger">
+                <i class="fas fa-trash"></i> Delete Entry
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
